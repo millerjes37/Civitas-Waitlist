@@ -170,36 +170,6 @@
             submitToGoogleSheet(name, email, optIn);
         });
 
-        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const optIn = document.getElementById('optIn').checked;
-            const nameError = document.getElementById('nameError');
-            const emailError = document.getElementById('emailError');
-            
-            // Reset error messages
-            nameError.style.display = 'none';
-            emailError.style.display = 'none';
-            
-            // Validate name
-            if (name.length === 0 || name.length > 50) {
-                nameError.style.display = 'block';
-                return;
-            }
-            
-            // Validate email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                emailError.style.display = 'block';
-                return;
-            }
-            
-            // If validation passes, submit to Google Sheet
-            submitToGoogleSheet(name, email, optIn);
-        });
-
         function submitToGoogleSheet(name, email, optIn) {
             const scriptURL = 'https://script.google.com/macros/s/AKfycbwI2x_ZJ0VCDeS5uxCbL93dgIgPU-9fgikkmAREp5Gr7b5rFhiYKUW8quGCAvulx9tA/exec';
             
