@@ -71,20 +71,27 @@
         <p>We're working to improve the way you conduct regulatory affairs.</p>
         <div id="feature-text"></div>
         <p>Join our waitlist now to participate in our Indiana beta:</p>
-        <form id="waitlistForm">
-            <input type="text" id="name" placeholder="Enter your full name" required>
+        
+        <!-- Updated Form -->
+        <form id="waitlistForm" action="https://script.google.com/macros/s/AKfycbw8-ldzyJuo_kvR86iwHp3kinER9cIEJZJUmSuh_buLVdxTiiVB1xeRisqEz3lHKXTV/exec" method="post">
+            <!-- Changed 'id' to 'name' for proper data binding with GAS -->
+            <input type="text" name="name" id="name" placeholder="Enter your full name" required maxlength="50">
             <div id="nameError" class="error">Please enter your full name (max 50 characters)</div>
-            <input type="email" id="email" placeholder="Enter your email" required>
+            
+            <input type="email" name="email" id="email" placeholder="Enter your email" required>
             <div id="emailError" class="error">Please enter a valid email address</div>
+            
             <div class="checkbox-container">
                 <input type="checkbox" id="optIn" name="optIn">
                 <label for="optIn">I agree to receive email communications from Civitas</label>
             </div>
+            
             <button type="submit">Join Waitlist</button>
         </form>
     </div>
 
     <script>
+        // Feature Text Rotation Script
         const features = [
             "Live Notifications",
             "Committee Hearing Monitoring",
@@ -140,59 +147,37 @@
         // Change text every 5 seconds
         setInterval(changeFeatureText, 5000);
 
+        // Client-Side Form Validation
         document.getElementById('waitlistForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
+            const name = document.getElementsByName('name')[0].value.trim();
+            const email = document.getElementsByName('email')[0].value.trim();
             const optIn = document.getElementById('optIn').checked;
             const nameError = document.getElementById('nameError');
             const emailError = document.getElementById('emailError');
-            
+
+            let valid = true;
+
             // Reset error messages
             nameError.style.display = 'none';
             emailError.style.display = 'none';
-            
+
             // Validate name
             if (name.length === 0 || name.length > 50) {
                 nameError.style.display = 'block';
-                return;
+                valid = false;
             }
-            
+
             // Validate email
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 emailError.style.display = 'block';
-                return;
+                valid = false;
             }
-            
-            // If validation passes, submit to Google Sheet
-            submitToGoogleSheet(name, email, optIn);
-        });
 
-        function submitToGoogleSheet(name, email, optIn) {
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbwK0R3qAvhTdMUkhEpeabLafFr7VFT3KUrOHRsQNGlhiifJFo6wQnT_KKGGx73m8gM/exec';
-            
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify({name: name, email: email, optIn: optIn}),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Thank you for joining our waitlist!');
-                    document.getElementById('waitlistForm').reset();
-                } else {
-                    alert('There was an error. Please try again later.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('There was an error. Please try again later.');
-            });
-        }
+            if (!valid) {
+                e.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
     </script>
 </body>
 </html>
