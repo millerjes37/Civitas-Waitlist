@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civitas - Coming Soon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+        }
+        img {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #feature-text {
+            font-weight: bold;
+            color: #5f6f80;
+            height: 24px; /* Adjust as needed */
+            margin-bottom: 20px;
+        }
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .checkbox-container {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            font-size: 0.8em;
+            margin-top: -5px;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="Civitas-Logo-White-BG.png" alt="Civitas Logo">
+        <p>We're working to improve the way you conduct regulatory affairs.</p>
+        <div id="feature-text"></div>
+        <p>Join our waitlist now to participate in our Indiana beta:</p>
+        <form id="waitlistForm">
+            <input type="text" id="name" placeholder="Enter your full name" required>
+            <div id="nameError" class="error">Please enter your full name (max 50 characters)</div>
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <div id="emailError" class="error">Please enter a valid email address</div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="optIn" name="optIn">
+                <label for="optIn">I agree to receive email communications from Civitas</label>
+            </div>
+            <button type="submit">Join Waitlist</button>
+        </form>
+    </div>
+
+    <script>
+        const features = [
+            "Live Notifications",
+            "Committee Hearing Monitoring",
+            "Dynamic User-Specific Reports",
+            "Issue Monitoring",
+            "News Monitoring",
+            "Bill Tracking",
+            "Predictive Analytics",
+            "Compliance Monitoring",
+            "Code Forecasting",
+            "And much more..."
+        ];
+
+        let currentFeatureIndex = 0;
+        const featureTextElement = document.getElementById('feature-text');
+
+        function fadeOut(element, callback) {
+            let opacity = 1;
+            const timer = setInterval(() => {
+                if (opacity <= 0.1) {
+                    clearInterval(timer);
+                    element.style.display = 'none';
+                    callback();
+                }
+                element.style.opacity = opacity;
+                opacity -= opacity * 0.1;
+            }, 50);
+        }
+
+        function fadeIn(element, text) {
+            element.textContent = text;
+            element.style.display = 'block';
+            let opacity = 0.1;
+            const timer = setInterval(() => {
+                if (opacity >= 1) {
+                    clearInterval(timer);
+                }
+                element.style.opacity = opacity;
+                opacity += opacity * 0.1;
+            }, 50);
+        }
+
+        function changeFeatureText() {
+            fadeOut(featureTextElement, () => {
+                currentFeatureIndex = (currentFeatureIndex + 1) % features.length;
+                fadeIn(featureTextElement, features[currentFeatureIndex]);
+            });
+        }
+
+        // Initial text display
+        fadeIn(featureTextElement, features[currentFeatureIndex]);
+
+        // Change text every 5 seconds
+        setInterval(changeFeatureText, 5000);
+
+        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const optIn = document.getElementById('optIn').checked;
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            
+            // Reset error messages
+            nameError.style.display = 'none';
+            emailError.style.display = 'none';
+            
+            // Validate name
+            if (name.length === 0 || name.length > 50) {
+                nameError.style.display = 'block';
+                return;
+            }
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailError.style.display = 'block';
+                return;
+            }
+            
+            // If validation passes, submit to Google Sheet
+            submitToGoogleSheet(name, email, optIn);
+        });
+
+        document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const optIn = document.getElementById('optIn').checked;
+            const nameError = document.getElementById('nameError');
+            const emailError = document.getElementById('emailError');
+            
+            // Reset error messages
+            nameError.style.display = 'none';
+            emailError.style.display = 'none';
+            
+            // Validate name
+            if (name.length === 0 || name.length > 50) {
+                nameError.style.display = 'block';
+                return;
+            }
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                emailError.style.display = 'block';
+                return;
+            }
+            
+            // If validation passes, submit to Google Sheet
+            submitToGoogleSheet(name, email, optIn);
+        });
+
+        function submitToGoogleSheet(name, email, optIn) {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbwI2x_ZJ0VCDeS5uxCbL93dgIgPU-9fgikkmAREp5Gr7b5rFhiYKUW8quGCAvulx9tA/exec';
+            
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify({name: name, email: email, optIn: optIn}),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Thank you for joining our waitlist!');
+                    document.getElementById('waitlistForm').reset();
+                } else {
+                    alert('There was an error. Please try again later.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error. Please try again later.');
+            });
+        }
+    </script>
+</body>
+</html>
